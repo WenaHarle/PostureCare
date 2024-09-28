@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "103054121848",
+    "firebase_url": "https://postucare-c8f3b-default-rtdb.firebaseio.com",
+    "project_id": "postucare-c8f3b",
+    "storage_bucket": "postucare-c8f3b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103054121848:android:5e9ab84e254f1f83cc868d",
+        "android_client_info": {
+          "package_name": "com.example.posturecare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxskByjIQ8eBJbWlr2xIhje8d1_DpaAzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
