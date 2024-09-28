@@ -7,7 +7,7 @@ import 'main/heater_page.dart';
 import 'firebase_options.dart';
 import 'main/home.dart';
 import 'side/faq.dart';
-import 'package:google_fonts/google_fonts.dart';  
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +42,15 @@ class _HomePageState extends State<HomePage> {
     ProfilePage(),
   ];
 
+  // Method to create a gradient
+  LinearGradient _buildGradient() {
+    return LinearGradient(
+      colors: [Color(0xFFFFA726), Color(0xFFFFD95B)], // Orange to yellow gradient
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,60 +58,95 @@ class _HomePageState extends State<HomePage> {
         title: Row(
           children: [
             Image.asset(
-              'assets/logo.png', // path to your logo asset
+              'assets/logo2.png', // path to your logo asset
               height: 40.0, // adjust as needed
             ),
-            SizedBox(width: 8.0),
-            Text('Posture Care',
-            style: GoogleFonts.poppins()
+            SizedBox(width: 20.0),
+            Text(
+              'PostureCare',
+              style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                  color: Colors.white, // White text on gradient
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
-        backgroundColor: Colors.grey.shade300,
+        flexibleSpace: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                gradient: _buildGradient(), // Gradient for AppBar
+              ),
+            ),
+            Positioned(
+              left: -20,
+              top: 40,
+              bottom: 5,
+              child: Container(
+                width: 80, // Adjust the width to your needs
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(100), // Smaller radius for rounded rectangle
+                ),
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications),
+            icon: Icon(Icons.notifications, color: Colors.white),
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.message),
+            icon: Icon(Icons.message, color: Colors.white),
             onPressed: () {},
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _pageIndex,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.grey.shade300,
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.black,
-        onTap: (index) {
-          setState(() {
-            _pageIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/bar.png'), // Use the uploaded image as background
+            fit: BoxFit.cover, // Ensure the image covers the entire background
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart),
-            label: 'Graph',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.thermostat),
-            label: 'Heater',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.help),
-            label: 'FAQ',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _pageIndex,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.transparent, // Ensure the background is transparent
+          elevation: 0, // Remove any shadow or elevation effect
+          selectedItemColor: Colors.orange,
+          unselectedItemColor: Colors.white, // White for unselected icons
+          onTap: (index) {
+            setState(() {
+              _pageIndex = index;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.show_chart),
+              label: 'Graph',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.thermostat),
+              label: 'Heater',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.help),
+              label: 'FAQ',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
       body: _pages[_pageIndex],
     );
