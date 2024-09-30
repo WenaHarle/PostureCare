@@ -12,8 +12,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String _accountName = 'MOCHAMAD SAIFUL ANWAR';
-  String _accountEmail = 'example@gmail.com';
+  String _accountName = ' ';
+  String _accountEmail = ' ';
   ImageProvider<Object>? _currentAccountPicture = AssetImage('assets/profile.png');
   bool _isLoading = true;
 
@@ -40,8 +40,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       if (userDoc.exists && userDoc.data() != null) {
         setState(() {
-          _accountName = userDoc.get('fullName') ?? 'MOCHAMAD SAIFUL ANWAR';
-          _accountEmail = userDoc.get('email') ?? 'example@gmail.com';
+          _accountName = userDoc.get('fullName') ?? ' ';
+          _accountEmail = userDoc.get('email') ?? ' ';
 
           String? profileImageUrl = userDoc.get('profileImageUrl');
           if (profileImageUrl != null && profileImageUrl.isNotEmpty) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:google_fonts/google_fonts.dart'; // For custom fonts
+import 'package:google_fonts/google_fonts.dart';
+import '../gradient_utils.dart';
 
 class BraceManagementPage extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class BraceManagementPage extends StatefulWidget {
 class _BraceManagementPageState extends State<BraceManagementPage> {
   final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
   Map<String, dynamic> _braceData = {};
+  Map<String, dynamic> _therapyProtocolData = {}; // New map for therapy protocol data
   bool _loading = true;
   String _errorMessage = '';
 
@@ -21,19 +23,31 @@ class _BraceManagementPageState extends State<BraceManagementPage> {
 
   Future<void> _fetchBraceData() async {
     try {
-      // Fetch data from 'Brace' node in Firebase
-      DatabaseEvent event = await _databaseReference.child('Brace').once();
-      DataSnapshot snapshot = event.snapshot;
+      // Fetch Brace Data
+      DatabaseEvent braceEvent = await _databaseReference.child('Brace').once();
+      DataSnapshot braceSnapshot = braceEvent.snapshot;
 
-      if (snapshot.exists && snapshot.value != null) {
+      // Fetch Therapy Protocol Data
+      DatabaseEvent therapyEvent = await _databaseReference.child('TherapyProtocol').once();
+      DataSnapshot therapySnapshot = therapyEvent.snapshot;
+
+      if (braceSnapshot.exists && braceSnapshot.value != null) {
         setState(() {
-          _braceData = Map<String, dynamic>.from(snapshot.value as Map);
+          _braceData = Map<String, dynamic>.from(braceSnapshot.value as Map);
         });
       } else {
         setState(() {
           _errorMessage = 'Data tidak ditemukan';
         });
       }
+
+      // Process therapy protocol data if it exists
+      if (therapySnapshot.exists && therapySnapshot.value != null) {
+        setState(() {
+          _therapyProtocolData = Map<String, dynamic>.from(therapySnapshot.value as Map);
+        });
+      }
+
     } catch (e) {
       setState(() {
         _errorMessage = 'Terjadi kesalahan: $e';
@@ -53,35 +67,50 @@ class _BraceManagementPageState extends State<BraceManagementPage> {
           'Brace Management',
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.orange.shade600,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: buildGradient(),
+          ),
+        ),
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator())
           : _errorMessage.isNotEmpty
-          ? Center(child: Text(_errorMessage, style: TextStyle(color: Colors.red, fontSize: 18)))
-          : Padding(
+          ? Center(
+        child: Text(
+          _errorMessage,
+          style: TextStyle(color: Colors.red, fontSize: 18),
+        ),
+      )
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Brace Data:',
-              style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
-            ),
+            _buildSectionTitle('Brace Data:'),
             const SizedBox(height: 16),
             _buildBraceData(),
-            Text(
-              'Protokol Terapi Thermotheraphy:',
-              style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
-            ),
-            Text(
-              'Dokumentasi Foto:',
-              style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
-            ),
+            const SizedBox(height: 32),
+            _buildSectionTitle('Protokol Terapi Thermotherapy:'),
+            const SizedBox(height: 16),
+            _buildTherapyProtocolData(), // New section for therapy protocol
+            const SizedBox(height: 32),
+            _buildSectionTitle('Dokumentasi Foto:'),
           ],
         ),
       ),
-      backgroundColor: Colors.grey[100], // Light grey background
+      backgroundColor: Colors.grey[200],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.poppins(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      ),
     );
   }
 
@@ -99,21 +128,146 @@ class _BraceManagementPageState extends State<BraceManagementPage> {
     );
   }
 
-  Widget _buildBraceCard(String title, dynamic value) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 5,
+  // New method to display therapy protocol data
+  Widget _buildTherapyProtocolData() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildTherapyCard('Jenis Terapi', _therapyProtocolData['Jenis Terapi']),
+        _buildTherapyCard('Durasi', _therapyProtocolData['Durasi']),
+        _buildTherapyCard('Frekuensi', _therapyProtocolData['Frekuensi']),
+        _buildTherapyCard('Instruksi', _therapyProtocolData['Instruksi']),
+      ],
+    );
+  }
+
+  // Cards for displaying therapy protocol data
+  Widget _buildTherapyCard(String title, dynamic value) {
+    return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-        leading: Icon(Icons.healing, color: Colors.orange.shade600),
-        title: Text(
-          title,
-          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
         ),
-        subtitle: Text(
-          value != null ? value.toString() : 'N/A',
-          style: GoogleFonts.poppins(fontSize: 16, color: Colors.black87),
+        elevation: 10,
+        shadowColor: Colors.grey.withOpacity(0.3),
+        child: ListTile(
+          contentPadding: const EdgeInsets.all(16.0),
+          leading: Icon(_getIconForTherapy(title), color: Colors.blue.shade600), // Different color for therapy data
+          title: Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          subtitle: Text(
+            value != null ? value.toString() : 'N/A',
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
         ),
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.white, Colors.blue.shade50],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 3,
+            blurRadius: 10,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Function to map relevant icons for therapy protocol
+  IconData _getIconForTherapy(String title) {
+    switch (title) {
+      case 'Jenis Terapi':
+        return Icons.spa;
+      case 'Durasi':
+        return Icons.timer;
+      case 'Frekuensi':
+        return Icons.repeat;
+      case 'Instruksi':
+        return Icons.menu_book;
+      default:
+        return Icons.info; // Default icon
+    }
+  }
+
+  // Function to map relevant icons for brace data
+  IconData _getIconForTitle(String title) {
+    switch (title) {
+      case 'Brace':
+        return Icons.healing;
+      case 'Model':
+        return Icons.architecture;
+      case 'Pelepasan':
+        return Icons.timer_off;
+      case 'Penyesuaian':
+        return Icons.build;
+      case 'Tanggal Pemasangan':
+        return Icons.calendar_today;
+      case 'Ukuran':
+        return Icons.straighten;
+      default:
+        return Icons.info; // Default icon
+    }
+  }
+
+  Widget _buildBraceCard(String title, dynamic value) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 10,
+        shadowColor: Colors.grey.withOpacity(0.3),
+        child: ListTile(
+          contentPadding: const EdgeInsets.all(16.0),
+          leading: Icon(_getIconForTitle(title), color: Colors.orange.shade600),
+          title: Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          subtitle: Text(
+            value != null ? value.toString() : 'N/A',
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.white, Colors.orange.shade50],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 3,
+            blurRadius: 10,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
       ),
     );
   }

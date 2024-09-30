@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 import 'main/home.dart';
 import 'side/faq.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'gradient_utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,13 +44,6 @@ class _HomePageState extends State<HomePage> {
   ];
 
   // Method to create a gradient
-  LinearGradient _buildGradient() {
-    return LinearGradient(
-      colors: [Color(0xFFFFA726), Color(0xFFFFD95B)], // Orange to yellow gradient
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +71,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Container(
               decoration: BoxDecoration(
-                gradient: _buildGradient(), // Gradient for AppBar
+                gradient: buildGradient(), // Gradient for AppBar
               ),
             ),
             Positioned(

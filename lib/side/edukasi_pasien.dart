@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../gradient_utils.dart'; // Import the gradient utility
 
 // Function to build Linear Gradient
-LinearGradient _buildGradient() {
-  return LinearGradient(
-    colors: [Color(0xFFFFA726), Color(0xFFFFD95B)], // Orange to yellow gradient
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
-  );
-}
 
 // Main Patient Education Page
 class EdukasiPasienPage extends StatelessWidget {
@@ -21,7 +15,7 @@ class EdukasiPasienPage extends StatelessWidget {
         child: AppBar(
           flexibleSpace: Container(
             decoration: BoxDecoration(
-              gradient: _buildGradient(),
+              gradient: buildGradient(),
             ),
           ),
           title: Text('Edukasi Pasien', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -62,7 +56,7 @@ class EdukasiPasienPage extends StatelessWidget {
             ),
             SizedBox(height: 30),
             Text(
-              'Permainan Sederhana',
+              'Permainan',
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.deepOrangeAccent),
             ),
             SizedBox(height: 10),
@@ -77,15 +71,6 @@ class EdukasiPasienPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
             ),
             SizedBox(height: 20),
-            Text(
-              'Kenal Kanal Kamu',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.deepOrangeAccent),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Merupakan forum grup dukungan sesama pasien dan keluarga.',
-              style: TextStyle(fontSize: 18),
-            ),
           ],
         ),
       ),

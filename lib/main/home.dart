@@ -15,12 +15,12 @@ class MainPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.only(top: 20.0, left: 8.0, right: 8.0, bottom: 8.0),
+        padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
               GridView.count(
-                crossAxisCount: 3, // Adjust the number of columns
+                crossAxisCount: 4, // Keep 4 columns
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,
                 shrinkWrap: true,
@@ -31,10 +31,10 @@ class MainPage extends StatelessWidget {
                     Icons.forum,
                     'Forum Diskusi Kesehatan',
                     Colors.cyan,
-                    () {
+                        () {
                       Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ForumDiskusiKesehatanPage(),
-                    ));
+                        builder: (context) => ForumDiskusiKesehatanPage(),
+                      ));
                     },
                   ),
                   _buildGridItem(
@@ -42,10 +42,10 @@ class MainPage extends StatelessWidget {
                     Icons.info,
                     'Informasi Tenaga Kesehatan',
                     Colors.purple,
-                    () {
+                        () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => InformasiTenagaKesehatanPage(),
-                     ));
+                      ));
                     },
                   ),
                   _buildGridItem(
@@ -53,7 +53,7 @@ class MainPage extends StatelessWidget {
                     Icons.support,
                     'Dukungan Lain',
                     Colors.orange,
-                    () {
+                        () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => DukunganLainPage(),
                       ));
@@ -64,7 +64,7 @@ class MainPage extends StatelessWidget {
                     Icons.manage_accounts,
                     'Brace Management',
                     Colors.red,
-                    () {
+                        () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => BraceManagementPage(),
                       ));
@@ -75,7 +75,7 @@ class MainPage extends StatelessWidget {
                     Icons.self_improvement,
                     'Self Management',
                     Colors.brown,
-                    () {
+                        () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => SelfManagementPage(),
                       ));
@@ -86,7 +86,7 @@ class MainPage extends StatelessWidget {
                     Icons.school,
                     'Edukasi Pasien',
                     Colors.teal,
-                    () {
+                        () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => EdukasiPasienPage(),
                       ));
@@ -97,7 +97,7 @@ class MainPage extends StatelessWidget {
                     Icons.settings,
                     'Settings',
                     Colors.pink,
-                    () {
+                        () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => SettingsPage(),
                       ));
@@ -108,7 +108,7 @@ class MainPage extends StatelessWidget {
                     Icons.exit_to_app,
                     'Exit',
                     Colors.black,
-                    () {
+                        () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => LoginPage(),
                       ));
@@ -127,28 +127,34 @@ class MainPage extends StatelessWidget {
       BuildContext context, IconData icon, String title, Color color, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            backgroundColor: color.withOpacity(0.1),
-            child: Icon(
-              icon,
-              size: 25.0,
-              color: color,
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              backgroundColor: color.withOpacity(0.1),
+              child: Icon(
+                icon,
+                size: 25.0,
+                color: color,
+              ),
+              radius: 25.0,
             ),
-            radius: 25.0,
-          ),
-          SizedBox(height: 8.0),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: 12.0,
+            SizedBox(height: 8.0),
+            Flexible(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 10.0, // Reduced font size for better fit
+                ),
+                maxLines: 2, // Limit text to two lines
+                overflow: TextOverflow.ellipsis, // Ellipsis if text overflows
+              ),
             ),
-            overflow: TextOverflow.visible, // Ensure text wraps
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
